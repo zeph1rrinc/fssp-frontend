@@ -37,7 +37,7 @@ const Login = () => {
                     <Form.Label className="sr-only">Пароль</Form.Label>
                     <Form.Control type="password" placeholder="Введите пароль..." value={password} onChange={e => setPassword(e.target.value)}/>
                 </Form.Group>
-                <Button variant="primary" onClick={signIn}>
+                <Button variant="primary" type="submit" onClick={signIn}>
                     Войти
                 </Button>
             </Form>

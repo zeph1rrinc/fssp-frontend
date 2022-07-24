@@ -7,3 +7,12 @@ export const login = async (login, password) => {
     return jwtDecode(data.token)
 }
 
+export const get_all_users = async () => {
+    const {data} = await $authHost.get('/api/auth')
+    return data
+}
+
+export const delete_user = async (id) => {
+    const {data} = await $authHost.delete(`/api/auth/${id}`)
+    return data.message
+}
