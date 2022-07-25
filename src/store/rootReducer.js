@@ -10,9 +10,15 @@ if (localStorage.hasOwnProperty('Token')){
         isAuth: true
     }
 } else {
+    // defaultState = {
+    //     user: null,
+    //     isAuth: false
+    // }
     defaultState = {
-        user: null,
-        isAuth: false
+        user: {
+            id: 0
+        },
+        isAuth: true
     }
 }
 

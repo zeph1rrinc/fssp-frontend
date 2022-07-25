@@ -12,6 +12,11 @@ export const get_all_users = async () => {
     return data
 }
 
+export const create_user = async (userInfo) => {
+    const {data} = await $authHost.post('/api/auth', userInfo)
+    return data
+}
+
 export const delete_user = async (id) => {
     const {data} = await $authHost.delete(`/api/auth/${id}`)
     return data.message

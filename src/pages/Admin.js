@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useSelector} from "react-redux";
 import {Link, Navigate} from "react-router-dom"
 import {Button, Table} from "react-bootstrap";
-import {delete_user, get_all_users} from "../http/userAPI";
+import {create_user, delete_user, get_all_users} from "../http/userAPI";
 import Employee from "../components/Employee";
 import Swal from "sweetalert2";
 import NewEmployee from "../components/NewEmployee";
@@ -18,7 +18,11 @@ const Admin = () => {
         Swal.fire("Успех", result, 'success')
     }
 
-
+    const createHandler = async (userInfo) => {
+        const result = await create_user(userInfo)
+        setEmployees([...employees, userInfo])
+        Swal.fire("Успех", result, 'success')
+    }
 
 
     useEffect(() => {
@@ -48,6 +52,7 @@ const Admin = () => {
             <NewEmployee
                 show={modalShow}
                 onHide={() => setModalShow(false)}
+                onSave={createHandler}
             />
 
             <Table striped bordered hover variant="dark">
