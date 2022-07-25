@@ -101,7 +101,7 @@ const NewEmployee = (props) => {
                 </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="outline-dark" onClick={props.onSave(userInfo)}>Сохранить</Button>
+                <Button variant="outline-dark" onClick={() => props.onSave(userInfo)}>Сохранить</Button>
                 <Button variant="outline-dark" onClick={props.onHide}>Закрыть</Button>
             </Modal.Footer>
         </Modal>
