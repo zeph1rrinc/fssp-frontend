@@ -6,6 +6,7 @@ import {create_user, delete_user, get_all_users} from "../http/userAPI";
 import Employee from "../components/Employee";
 import Swal from "sweetalert2";
 import NewEmployee from "../components/NewEmployee";
+import {ErrorHandler} from "../utils/errorHandler";
 
 const Admin = () => {
     const {user} = useSelector(state => state)
@@ -15,13 +16,19 @@ const Admin = () => {
     const deleteHandler = async (id) => {
         const result = await delete_user(id)
         setEmployees(employees.filter(employee => employee.id !== id))
-        Swal.fire("Успех", result, 'success')
+        await Swal.fire("Успех", result, 'success')
     }
 
     const createHandler = async (userInfo) => {
-        const result = await create_user(userInfo)
-        setEmployees([...employees, userInfo])
-        Swal.fire("Успех", result, 'success')
+        try {
+            const result = await create_user(userInfo)
+            setEmployees([...employees, userInfo])
+            await Swal.fire("Успех", result, 'success')
+            setModalShow(false)
+        } catch (err) {
+            await Swal.fire('Ошибка!', ErrorHandler(err), 'error')
+        }
+
     }
 
 

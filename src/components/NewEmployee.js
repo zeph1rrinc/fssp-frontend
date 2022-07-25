@@ -12,8 +12,6 @@ const NewEmployee = (props) => {
         password: ''
     })
 
-    console.log(userInfo)
-
 
     return (
         <Modal
