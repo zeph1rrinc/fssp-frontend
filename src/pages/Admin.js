@@ -12,6 +12,7 @@ const Admin = () => {
     const {user} = useSelector(state => state)
     const [employees, setEmployees] = useState([])
     const [modalShow, setModalShow] = useState(false);
+    const [needLoading, setNeedLoading] = useState(true)
 
     const deleteHandler = async (id) => {
         const result = await delete_user(id)
@@ -23,8 +24,9 @@ const Admin = () => {
         try {
             const result = await create_user(userInfo)
             setEmployees([...employees, userInfo])
-            await Swal.fire("Успех", result, 'success')
+            await Swal.fire("Успех", result.message, 'success')
             setModalShow(false)
+            setNeedLoading(true)
         } catch (err) {
             await Swal.fire('Ошибка!', ErrorHandler(err), 'error')
         }
@@ -34,10 +36,13 @@ const Admin = () => {
 
     useEffect(() => {
         async function fetch_data() {
-            setEmployees(await get_all_users())
+            if (needLoading) {
+                setEmployees(await get_all_users())
+                setNeedLoading(false)
+            }
         }
         fetch_data()
-    }, [])
+    }, [needLoading])
 
     if (user.id !== 0) {
         return (
@@ -59,7 +64,7 @@ const Admin = () => {
             <NewEmployee
                 show={modalShow}
                 onHide={() => setModalShow(false)}
-                onSave={createHandler}
+                createHandler={createHandler}
             />
 
             <Table striped bordered hover variant="dark">
@@ -75,7 +80,7 @@ const Admin = () => {
                     </tr>
                 </thead>
                 <tbody>
-                {employees.map(employee => <Employee key={employee.id} employee={employee} deleteHandler={deleteHandler}/> )}
+                {employees.map(employee => <Employee key={employee.login} employee={employee} deleteHandler={deleteHandler}/> )}
                 </tbody>
             </Table>
         </div>

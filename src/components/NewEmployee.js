@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Form, Modal} from "react-bootstrap";
+import {get_all_units} from "../http/userAPI";
 
 const NewEmployee = (props) => {
     const [userInfo, setUserInfo] = useState({
@@ -11,6 +12,15 @@ const NewEmployee = (props) => {
         login: '',
         password: ''
     })
+
+    const [units, setUnits] = useState([])
+
+    useEffect(() => {
+        async function fetch_data() {
+            setUnits(await get_all_units())
+        }
+        fetch_data()
+    }, [])
 
 
     return (
@@ -64,9 +74,7 @@ const NewEmployee = (props) => {
                             onChange={e => setUserInfo({...userInfo, unit_id: e.target.value})}
                         >
                             <option>Выбрать...</option>
-                            <option value="1">УФССП по юго-заподному округу</option>
-                            <option value="2">УФССП по северному округу</option>
-                            <option value="3">УФССП по северо-восточному окугу'</option>
+                            {units.map(unit => <option key={unit.id} value={unit.id}>{unit.name}</option>)}
                         </Form.Select>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formBasicPost">
@@ -101,7 +109,7 @@ const NewEmployee = (props) => {
                 </Form>
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="outline-dark" onClick={() => props.onSave(userInfo)}>Сохранить</Button>
+                <Button variant="outline-dark" onClick={() => props.createHandler(userInfo)}>Сохранить</Button>
                 <Button variant="outline-dark" onClick={props.onHide}>Закрыть</Button>
             </Modal.Footer>
         </Modal>
