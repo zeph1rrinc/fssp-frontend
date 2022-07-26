@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useSelector} from "react-redux";
 import {Link, Navigate} from "react-router-dom"
-import {Button, Table} from "react-bootstrap";
+import {Button, Row, Table, Form} from "react-bootstrap";
 import {create_user, delete_user, get_all_users} from "../http/userAPI";
 import Employee from "../components/Employee";
 import Swal from "sweetalert2";
@@ -10,12 +10,25 @@ import {ErrorHandler} from "../utils/errorHandler";
 
 const Admin = () => {
     const {user} = useSelector(state => state)
+    const [initalEmployees, setInitialEmployees] = useState([])
     const [employees, setEmployees] = useState([])
     const [modalShow, setModalShow] = useState(false);
     const [needLoading, setNeedLoading] = useState(true)
+    const [search, setSearch] = useState('')
+
+    const searchHandler = (e) => {
+        setSearch(e.target.value)
+        if (e.target.value.length) {
+            setEmployees(initalEmployees.filter(
+                employee => employee.lastname.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1 || employee.login.toLowerCase().indexOf(e.target.value.toLowerCase()) !== -1))
+        } else {
+            setEmployees(initalEmployees)
+        }
+    }
 
     const deleteHandler = async (id) => {
         const result = await delete_user(id)
+        setInitialEmployees(employees.filter(employee => employee.id !== id))
         setEmployees(employees.filter(employee => employee.id !== id))
         await Swal.fire("Успех", result, 'success')
     }
@@ -37,7 +50,9 @@ const Admin = () => {
     useEffect(() => {
         async function fetch_data() {
             if (needLoading) {
-                setEmployees(await get_all_users())
+                const data = await get_all_users()
+                setInitialEmployees(data)
+                setEmployees(data)
                 setNeedLoading(false)
             }
         }
@@ -55,11 +70,14 @@ const Admin = () => {
             <Link className="nav-link d-inline" style={{fontSize: "2 rem"}} to="/">{"<-"}</Link>&nbsp;&nbsp;&nbsp;
             <h1 className="text-center">Админ-панель</h1>
             <hr />
-            <h2>Пользователи</h2>
+            <h2 className="text-center">Пользователи</h2>
+            <Row className="justify-content-between  mb-3">
+                <Button variant="outline-dark d-inline w-25" onClick={() => setModalShow(true)}>
+                    Добавить пользователя
+                </Button>
+                <Form.Control className="d-inline w-25" value={search} onChange={(e) => searchHandler(e)} />
+            </Row>
 
-            <Button variant="outline-dark mb-3" onClick={() => setModalShow(true)}>
-                Добавить пользователя
-            </Button>
 
             <NewEmployee
                 show={modalShow}
